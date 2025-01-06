@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stats Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .stat {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 20px;
+      width: 150px;
+    }
+    .label {
+      font-size: 16px;
+      color: #555;
+    }
+    .value {
+      font-size: 24px;
+      color: #222;
+    }
+  </style>
+</head>
+<body>
+  <h1>Website Statistics</h1>
+  <div class="stats" id="stats"></div>
+
+  <script>
+    fetch('data.json')
+      .then(response => response.json())
+      .then(data => {
+        const statsContainer = document.getElementById('stats');
+        data.statistics.forEach(stat => {
+          const statElement = document.createElement('div');
+          statElement.classList.add('stat');
+          statElement.innerHTML = `
+            <div class="label">${stat.label}</div>
+            <div class="value">${stat.value}</div>
+          `;
+          statsContainer.appendChild(statElement);
+        });
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  </script>
+</body>
+</html>
