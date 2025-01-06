@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tax Rates Chart</title>
+  <title>Tax Rates Chart with Zoom</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,7 +19,7 @@
   </style>
 </head>
 <body>
-  <h1>Tax Rates Bar Chart</h1>
+  <h1>Tax Rates Chart with Zoom</h1>
   <canvas id="taxRatesChart"></canvas>
 
   <script>
@@ -35,15 +36,15 @@
         const labels = data.map(entry => entry.Name);
         const taxRates = data.map(entry => entry.TaxRate);
 
-        // Create the bar chart using Chart.js
+        // Create the bar chart with zoom functionality
         const ctx = document.getElementById('taxRatesChart').getContext('2d');
         new Chart(ctx, {
-          type: 'bar', // Use 'bar' for bar chart, 'line' for line chart, etc.
+          type: 'bar',
           data: {
-            labels: labels, // x-axis labels
+            labels: labels,
             datasets: [{
               label: 'Tax Rate (%)',
-              data: taxRates, // y-axis data
+              data: taxRates,
               backgroundColor: 'rgba(75, 192, 192, 0.5)',
               borderColor: 'rgba(75, 192, 192, 1)',
               borderWidth: 1
@@ -58,6 +59,21 @@
               title: {
                 display: true,
                 text: 'Tax Rates by Region'
+              },
+              zoom: {
+                zoom: {
+                  wheel: {
+                    enabled: true // Enable zooming with mouse wheel
+                  },
+                  pinch: {
+                    enabled: true // Enable zooming with pinch gestures
+                  },
+                  mode: 'x', // Zoom along the x-axis
+                },
+                pan: {
+                  enabled: true, // Enable panning
+                  mode: 'x', // Pan along the x-axis
+                }
               }
             },
             scales: {
