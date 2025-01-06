@@ -3,55 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stats Dashboard</title>
+  <title>Tax Rates</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
       text-align: center;
-      margin: 0;
-      padding: 20px;
     }
-    .stats {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
     }
-    .stat {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 20px;
-      width: 150px;
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
     }
-    .label {
-      font-size: 16px;
-      color: #555;
+    th {
+      background-color: #f4f4f4;
     }
-    .value {
-      font-size: 24px;
-      color: #222;
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
     }
   </style>
 </head>
 <body>
-  <h1>Website Statistics</h1>
-  <div class="stats" id="stats"></div>
+  <h1>Tax Rates Table</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Tax Rate (%)</th>
+      </tr>
+    </thead>
+    <tbody id="taxTableBody"></tbody>
+  </table>
 
   <script>
+    // Fetch data from the external JSON file
     fetch('data.json')
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
-        const statsContainer = document.getElementById('stats');
-        data.statistics.forEach(stat => {
-          const statElement = document.createElement('div');
-          statElement.classList.add('stat');
-          statElement.innerHTML = `
-            <div class="label">${stat.label}</div>
-            <div class="value">${stat.value}</div>
-          `;
-          statsContainer.appendChild(statElement);
+        const tableBody = document.getElementById('taxTableBody');
+        data.forEach(entry => {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td>${entry.Name}</td><td>${entry.TaxRate.toFixed(2)}</td>`;
+          tableBody.appendChild(row);
         });
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => {
+        console.error('Error fetching the JSON data:', error);
+      });
   </script>
 </body>
 </html>
