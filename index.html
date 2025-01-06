@@ -3,47 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tax Rates</title>
+  <title>Tax Rates Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
-    }
-    h1 {
       text-align: center;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background-color: #f4f4f4;
-    }
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-    tr:hover {
-      background-color: #f1f1f1;
+    canvas {
+      max-width: 800px;
+      margin: 0 auto;
     }
   </style>
 </head>
 <body>
-  <h1>Tax Rates Table</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Tax Rate (%)</th>
-      </tr>
-    </thead>
-    <tbody id="taxTableBody"></tbody>
-  </table>
+  <h1>Tax Rates Bar Chart</h1>
+  <canvas id="taxRatesChart"></canvas>
 
   <script>
     // Fetch data from the external JSON file
@@ -55,11 +31,48 @@
         return response.json();
       })
       .then(data => {
-        const tableBody = document.getElementById('taxTableBody');
-        data.forEach(entry => {
-          const row = document.createElement('tr');
-          row.innerHTML = `<td>${entry.Name}</td><td>${entry.TaxRate.toFixed(2)}</td>`;
-          tableBody.appendChild(row);
+        // Extract labels and data for the chart
+        const labels = data.map(entry => entry.Name);
+        const taxRates = data.map(entry => entry.TaxRate);
+
+        // Create the bar chart using Chart.js
+        const ctx = document.getElementById('taxRatesChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar', // Use 'bar' for bar chart, 'line' for line chart, etc.
+          data: {
+            labels: labels, // x-axis labels
+            datasets: [{
+              label: 'Tax Rate (%)',
+              data: taxRates, // y-axis data
+              backgroundColor: 'rgba(75, 192, 192, 0.5)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Tax Rates by Region'
+              }
+            },
+            scales: {
+              x: {
+                ticks: {
+                  maxRotation: 90,
+                  minRotation: 45,
+                  autoSkip: false
+                }
+              },
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
         });
       })
       .catch(error => {
